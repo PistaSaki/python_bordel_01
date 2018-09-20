@@ -1,0 +1,11 @@
+import_folder: ../data/basket
+max_pts: 10
+
+parts:
+ - 
+  max_events: 10
+  ball_advantage: 0.1
+ -
+  max_events: 10
+  ball_advantage: 0.2
+   
