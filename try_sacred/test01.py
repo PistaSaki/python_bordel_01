@@ -1,6 +1,6 @@
-from sacred import Experiment
+import sacred
 
-ex = Experiment()
+ex = sacred.Experiment()
 
 #@ex.config
 #def my_config_01():
