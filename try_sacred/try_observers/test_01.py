@@ -43,6 +43,13 @@ def main(a, b, c):
     get_plot(b = 1).savefig(fig_path)
     ex.add_artifact(fig_path)
     
+    ex.log_scalar("current_a", value = a, step=1)
+    a += 1
+    ex.log_scalar("current_a", value = a, step=2)
+    
+    return {
+        "x": 10, "y": {"z": [1, 2], "txt": "Hello World"}
+    }
 
 #    ######
 #    ## try put folder as artifact
