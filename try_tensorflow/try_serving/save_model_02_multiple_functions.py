@@ -20,6 +20,12 @@ The body is a JSON for instance:
 ```
 If you want to calculate only `y`, specify `"signature_name": "only_y"`.
 
+REMARK: You can check the supported signatures by running 
+```
+saved_model_cli show --dir {export_path} --all
+```
+in the command line.
+
 """
 #%%
 import tensorflow as tf
@@ -34,33 +40,23 @@ with tf.Session() as sess:
 #%%
 ## Saving
 from pathlib import Path
+from tensorflow import Tensor
+from tensorflow.core.protobuf.meta_graph_pb2 import SignatureDef
+from typing import Dict
+
+
 MODEL_DIR = Path("d:/tmp22/pista")
 version = 1
 export_path = MODEL_DIR / str(version)
 
 sess = tf.InteractiveSession()
 
-sig_def_1 = tf.saved_model.signature_def_utils.build_signature_def(
-        inputs = {'x': tf.saved_model.utils.build_tensor_info(x)},
-        outputs = {'y': tf.saved_model.utils.build_tensor_info(y)},
+def _sig_def(inputs: Dict[str, Tensor], outputs:Dict[str, Tensor]) -> SignatureDef:
+    return tf.saved_model.signature_def_utils.build_signature_def(
+        inputs = {k: tf.saved_model.utils.build_tensor_info(v) for k, v in inputs.items()},
+        outputs = {k: tf.saved_model.utils.build_tensor_info(v) for k, v in outputs.items()},
         method_name = tf.saved_model.signature_constants.PREDICT_METHOD_NAME
     )
-
-sig_def_2 = tf.saved_model.signature_def_utils.build_signature_def(
-        inputs = {'x': tf.saved_model.utils.build_tensor_info(x)},
-        outputs = {'z': tf.saved_model.utils.build_tensor_info(z)},
-        method_name = tf.saved_model.signature_constants.PREDICT_METHOD_NAME
-    )
-
-sig_def_3 = tf.saved_model.signature_def_utils.build_signature_def(
-        inputs = {'x': tf.saved_model.utils.build_tensor_info(x)},
-        outputs = {
-            'y': tf.saved_model.utils.build_tensor_info(y), 
-            'z': tf.saved_model.utils.build_tensor_info(z)
-        },
-        method_name = tf.saved_model.signature_constants.PREDICT_METHOD_NAME
-    )
-
 
 builder = tf.saved_model.builder.SavedModelBuilder(str(export_path))
 
@@ -68,9 +64,9 @@ builder.add_meta_graph_and_variables(
         sess = sess,
         tags = [tf.saved_model.tag_constants.SERVING],
         signature_def_map={
-            'only_y': sig_def_1,
-            'only_z': sig_def_2,
-            'both_yz': sig_def_3,
+            'only_y': _sig_def({"x": x}, {"y": y}),
+            'only_z': _sig_def({"x": x}, {"z": z}),
+            'both_yz': _sig_def({"x": x}, {"y": y, "z": z}),
         }
     )
 
