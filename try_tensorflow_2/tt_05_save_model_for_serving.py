@@ -1,5 +1,5 @@
 import tensorflow as tf
-
+from pathlib import Path
 #%%%
 ## Tensorflow official example from
 ## https://www.tensorflow.org/beta/guide/saved_model
@@ -37,19 +37,25 @@ signatures = {
     "mutate": module.mutate,
     "info": module.info
 }
+#%%
+out_dir = Path("d:/tmp/model_serving/model_name/version_01")
+out_dir = out_dir.absolute().resolve()
+out_dir
+#%%
+tf.saved_model.save(module, str(out_dir), signatures=signatures)
+#%%
 
-tf.saved_model.save(module, "d:/tmp/module_with_signature/1", signatures=signatures)
 #%%
 # For serving run in command line
 # docker run -t --rm -p 8501:8501 -v "d:/tmp/module_with_signature:/models/pista" -e "MODEL_NAME=pista" tensorflow/serving
 #%%
 ## If the server runs you can try the following
 import requests
-resp = requests.get(url= r"http://localhost:8501/v1/models/pista/metadata")
+resp = requests.get(url= r"http://localhost:8501/v1/models/model_name/metadata")
 print(resp.json())
 
 #%%
-url= r"http://localhost:8501/v1/models/pista:predict"
+url= r"http://localhost:8501/v1/models/model_name:predict"
 
 resp = requests.post(
     url=url,
