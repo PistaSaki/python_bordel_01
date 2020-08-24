@@ -6,7 +6,7 @@ is represented by tensor `a = [a_0, a_1,..., a_n]`.
 """
 import tensorflow as tf
 
-# The details of the following functions are not important.
+# The details of the following function are not important.
 def poly_prod(a, b):
     """Return coefficients of product of polynomials with coeffs `a`, `b`."""
     deg_a, deg_b = [tf.shape(x)[0] for x in [a, b]]
