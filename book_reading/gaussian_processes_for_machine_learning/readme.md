@@ -1,0 +1,1 @@
+C.E. Rasmussen, C.K.I. Williams: Gaussian Processes for Machine Learning

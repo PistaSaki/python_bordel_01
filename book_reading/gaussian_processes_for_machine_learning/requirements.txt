@@ -1,0 +1,8 @@
+matplotlib
+numpy
+scipy
+tensorflow
+tensorflow-probability
+pandas
+sympy
+jupyterlab
