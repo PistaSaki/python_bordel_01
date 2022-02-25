@@ -6,3 +6,4 @@ tensorflow-probability
 pandas
 sympy
 jupyterlab
+pymc3

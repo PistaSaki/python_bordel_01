@@ -42,3 +42,13 @@ def get_posterior_mean_cov(
     f2_cov = k22 - k21 @ m @ k21.T
 
     return f2_mean, f2_cov
+
+
+def get_log_evidence(mean: float, cov_fun: Callable, obs_var: float,
+                     x: ndarray, y: ndarray) -> float:
+    n = len(x)
+    cov = get_covariance_matrix(cov_fun, x) + obs_var * np.eye(n)
+    cov_inv = np.linalg.inv(cov)
+    cov_det = np.linalg.det(cov)
+    y1 = y - mean
+    return - n/2 * np.log(2 * np.pi) - 1/2 * np.log(cov_det) - 1/2 * y1 @ cov_inv @ y1
